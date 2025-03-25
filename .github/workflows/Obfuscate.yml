@@ -1,73 +1,57 @@
-name: Build Obfuscate BPB Panel
-name： 构建 Obfuscate BPB 面板
+name: 构建 Obfuscate BPB 面板
 
-on:  上：
-  push:  推：
-    branches:  分支：
-      - main  -主要
-  schedule:  附表：
-        # Runs everyday at 1:00 AM
-# 每天凌晨 1：00 运行
-        - cron: "0 1 * * *"
-- cron： “0 1 * * *”
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Runs everyday at 1:00 AM
+    - cron: "0 1 * * *"
 
-permissions:  权限：
-  contents: write  内容： 写入
+permissions:
+  contents: write
 
-jobs:  工作：
-  build:  建：
-    runs-on: ubuntu-latest  运行时间：ubuntu-latest
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-    steps:  步骤：
+    steps:
       - name: Check out the code
-- name： 查看代码
         uses: actions/checkout@v4
-用途：作/checkout@v4
 
       - name: Set up Node.js
-- name： 设置 Node.js
         uses: actions/setup-node@v4
-使用： actions/setup-node@v4
-        with:  跟：
-          node-version: "latest"  node-version： “最新”
+        with:
+          node-version: "latest"
 
       - name: Install dependencies
-- name： 安装依赖项
-        run: |  运行： |
+        run: |
           npm install -g javascript-obfuscator
 
       - name: Clone BPB workjs
-- name： 克隆 BPB workjs
-        run: |  运行： |
+        run: |
           wget -O origin.js https://raw.githubusercontent.com/bia-pain-bache/BPB-Worker-Panel/refs/heads/main/build/unobfuscated-worker.js
 
       - name: Obfuscate BPB worker js
-- 名称：混淆 BPB worker js
-        run: |  运行： |
+        run: |
           javascript-obfuscator origin.js --output _worker.js \
-          --compact true \  --compact 真 \
+          --compact true \
           --control-flow-flattening true \
           --control-flow-flattening-threshold 1 \
           --dead-code-injection true \
           --dead-code-injection-threshold 1 \
           --identifier-names-generator hexadecimal \
---identifier-names-generator 十六进制 \
           --rename-globals true \
-          --string-array true \  --string-array 真 \
+          --string-array true \
           --string-array-encoding 'rc4' \
           --string-array-threshold 1 \
           --transform-object-keys true \
           --unicode-escape-sequence true
---unicode-escape-sequence 真
 
-      - name: Commit changes  - name： 提交更改
+      - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
-用途： stefanzweifel/git-auto-commit-action@v5
-        with:  跟：
-          branch: main  分支：main
+        with:
+          branch: main
           commit_message: ':arrow_up: update latest bpb panel'
-commit_message：“：arrow_up：更新最新的 BPB 面板”
           commit_author: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'
-commit_author：“github-actions[bot] <github-actions[bot]@users.noreply.github.com>”
           push_options: '--set-upstream'
-push_options：“--set-upstream”
